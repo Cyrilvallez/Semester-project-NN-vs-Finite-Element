@@ -1,6 +1,7 @@
 # Semester project : Comparison between anisotropic finite element method and neural networks in 1D and 2D
 
 Author : Cyril Vallez (<cyril.vallez@epfl.ch>)
+
 _Exploration and comparison of the finite element method and neural networks for the approximation of (sharp transition) functions in one and several dimensions._
 
 ## Folders
