@@ -1,5 +1,6 @@
 .DS_Store
 .ipynb_checkpoints
+.vscode
 Week1.pdf
 plotshape2d.m
 NN_approximation.pdf
