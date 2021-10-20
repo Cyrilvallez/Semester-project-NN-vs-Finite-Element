@@ -3,5 +3,6 @@
 Week1.pdf
 plotshape2d.m
 NN_approximation.pdf
-Tools/__pycache__/**
-Tools/.ipynb_checkpoints/**
+Tools/__pycache__
+Tools/.ipynb_checkpoints
+Data/.ipynb_checkpoints
