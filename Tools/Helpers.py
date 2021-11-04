@@ -55,44 +55,61 @@ def weights_FEM_first_layer_1D(N=100):
     
     return [core1, bias1]
 
-#----------------------------------------- LOSSES FUNCTIONS ----------------------------------------------------------
+#----------------------------------------- METRICS FUNCTIONS ----------------------------------------------------------
 
 def MSE(model, features, labels):
     """ Computes the MSE of a model on the given features/labels """
-    pred = model.predict(features).ravel()
+    pred = model.predict(features)
+    labels = np.expand_dims(labels, axis=-1)
     assert(pred.shape == labels.shape)
-    mse = tf.keras.losses.MeanSquaredError()
+    mse = tf.keras.losses.MeanSquaredError(reduction='sum_over_batch_size')
     
-    return mse(labels, pred)
+    return mse(labels, pred).numpy()
 
 def MAE(model, features, labels):
     """ Computes the MAE of a model on the given features/labels """
-    pred = model.predict(features).ravel()
+    pred = model.predict(features)
+    labels = np.expand_dims(labels, axis=-1)
     assert(pred.shape == labels.shape)
-    mae = tf.keras.losses.MeanAbsoluteError()
+    mae = tf.keras.losses.MeanAbsoluteError(reduction='sum_over_batch_size')
     
-    return mae(labels, pred)
+    return mae(labels, pred).numpy()
+
+def MaAE(model, features, labels):
+    """ Computes the MaAE of a model on the given features/labels """
+    pred = model.predict(features)
+    labels = np.expand_dims(labels, axis=-1)
+    assert(pred.shape == labels.shape)
+    mae = tf.keras.losses.MeanAbsoluteError(reduction='none')
+    error = mae(labels, pred).numpy()
+    
+    return np.max(error)
 
 #----------------------------------------- BASIS FUNCTIONS ----------------------------------------------------------
 
-def basis_functions_first_layer(x, layer1):
-    """ Compute the basis functions created by layer 1 on the space interval denoted by x """
+def basis_functions_layer(x, layers):
+    """ Compute the basis functions created by an arbitrary layer on the space interval denoted by x
+    
+    layers : list of all the layers until the layer of interest
+    
+    For example if we want to visualize what happens in layer 3
+    --> layers = [layer1, layer2, layer3] 
+    
+    """
     x2 = np.expand_dims(x, axis=-1)
-    basis_func = layer1(x2)
+    for i in range(len(layers)):
+        x2 = layers[i](x2)
+    basis_func = x2.numpy().T
+    
+    return basis_func
 
-    return basis_func.numpy().T
-
-def basis_functions_second_layer(x, layer1, layer2, conv=False):
-    """ Compute the basis functions created by layer 1 and 2 on the space interval denoted by x """
+def basis_functions_conv_layer(x, layer1, layer2):
+    """ Compute the basis functions created by a dense followed by conv layer on the space interval denoted by x """
     x2 = np.expand_dims(x, axis=-1)
     x3 = layer1(x2)
-    if (conv):
-        x4 = tf.expand_dims(x3, axis=-1)
-        x5 = layer2(x4)
-        x6 = tf.squeeze(x5, axis=-1)
-        basis_func = x6.numpy().T
-    else:
-        x4 = layer2(x3)
-        basis_func = x4.numpy().T
+    x4 = tf.expand_dims(x3, axis=-1)
+    x5 = layer2(x4)
+    x6 = tf.squeeze(x5, axis=-1)
+    basis_func = x6.numpy().T
     
     return basis_func

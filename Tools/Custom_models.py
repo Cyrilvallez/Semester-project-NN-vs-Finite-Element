@@ -22,6 +22,38 @@ def my_bias_initializer_1D(shape, dtype=None):
     return tf.cast(bias, dtype=dtype)
     
 #------------------------------------------------------MODELS -------------------------------------------------------------------
+
+class Model_1D_width(tf.keras.Model):
+    
+    def __init__(self, K1, K_output=1, name=None):
+        super(Model_1D_width, self).__init__(name=name)
+        self.dense1 = Dense(K1, activation='relu', name='dense1')
+        self.dense2 = Dense(K1, activation='relu', name='dense2')
+        self.dense3 = Dense(K_output, activation=None, name='dense3')
+
+    def call(self, inputs):
+        x = self.dense1(inputs)
+        x2 = self.dense2(x)
+        x3 = self.dense3(x2)
+        return x3
+
+#----------------------------------------------------------------------- 
+
+class Model_1D_depth(tf.keras.Model):
+    
+    def __init__(self, K1, K_output=1, depth=1, name=None):
+        super(Model_1D_depth, self).__init__(name=name)
+        self.sequence = tf.keras.Sequential(name='sequential')
+        
+        for i in range(depth):
+            self.sequence.add(Dense(K1, activation='relu', name=f'dense{i+1}'))
+        self.sequence.add(Dense(K_output, activation=None, name=f'dense{depth+1}'))
+
+    def call(self, inputs):
+        x = self.sequence(inputs)
+        return x
+
+#----------------------------------------------------------------------- 
        
 class Model_1D_1_layer(tf.keras.Model):
     
@@ -50,7 +82,7 @@ class Model_1D_conv(tf.keras.Model):
         else:
             self.dense1 = Dense(K1, activation='relu', name='dense1', trainable=False, kernel_initializer='ones', 
                                 bias_initializer=my_bias_initializer_1D)
-        self.conv = Conv1D(filters=1, kernel_size=3, strides=1, padding='valid', activation=None, name='conv')
+        self.conv = Conv1D(filters=1, kernel_size=3, strides=1, padding='same', activation=None, name='conv')
         self.dense2 = Dense(K_output, activation=None, name='dense2')
 
     def call(self, inputs):
@@ -69,14 +101,14 @@ class Model_1D_2_layers(tf.keras.Model):
         super(Model_1D_2_layers, self).__init__(name=name)
         self.dense1 = Dense(K1, activation='relu', name='dense1')
         if (reg_kernel & reg_biases):
-            self.dense2 = Dense(K1 - 2, activation='relu',
+            self.dense2 = Dense(K1, activation='relu',
             kernel_regularizer=regularizers.l1(l1=reg_value),
             bias_regularizer=regularizers.l1(l1=reg_value), name='dense2')
         elif (reg_kernel & (not reg_biases)):
-            self.dense2 = Dense(K1 - 2, activation='relu',
+            self.dense2 = Dense(K1, activation='relu',
             kernel_regularizer=regularizers.l1(l1=reg_value), name='dense2')
         else:
-            self.dense2 = Dense(K1 - 2, activation='relu', name='dense2')
+            self.dense2 = Dense(K1, activation='relu', name='dense2')
         self.dense3 = Dense(K_output, activation=None, name='dense3')
 
     def call(self, inputs):
