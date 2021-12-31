@@ -1,4 +1,4 @@
-# Semester project : Comparison between anisotropic finite element method and neural networks in 1D and 2D
+# Semester project : Characterisation of neural networks and comparison with finite element methods
 
 Author : Cyril Vallez (<cyril.vallez@epfl.ch>)
 
