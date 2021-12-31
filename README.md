@@ -14,6 +14,7 @@ _In this project, we study how neural networks compute approximation of real fun
 External Libraries
 - NumPy
 - Matplotlib
+- Pandas
 - Tensorflow
 - Keras
 - TQDM
