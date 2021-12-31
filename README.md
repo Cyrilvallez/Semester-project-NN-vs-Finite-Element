@@ -2,7 +2,8 @@
 
 Author : Cyril Vallez (<cyril.vallez@epfl.ch>)
 
-_Exploration and comparison of the finite element method and neural networks for the approximation of (sharp transition) functions in one and several dimensions._
+_In this project, we study how neural networks compute approximation of real function in one and several dimensions. We put an emphasis on how the approximation is constructed, meaning that we try to visualize and understand what happens in the neurons in the hidden layers of the networks. We compare this to finite element methods, for which analytic bounds and convergence order of the approximations are well known. Moreover, we try to understand what parameters are most important when computing such approximations with neural networks, and the impact they have on the global and local quality of the approximation.
+_
 
 ## Folders
 - Data : *contains all the data used to train and test the models*
